@@ -23,4 +23,4 @@ add_executable(test_jpg_puller
 	test_jpg_puller.cpp
 )
 
-target_link_libraries(test_jpg_puller pthread common)
+target_link_libraries(test_jpg_puller pthread common curl)
