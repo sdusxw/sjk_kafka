@@ -1,11 +1,17 @@
 #include <stdexcept>
 #include <iostream>
 #include <csignal>
+#include <time.h>
+#include <boost/thread.hpp>
+
+#include <json/json.h>  //jsoncpp
+
 #include "cppkafka/consumer.h"
 #include "cppkafka/configuration.h"
 
 #include "common.h"
 #include "pull_jpg2ram.h"
+#include "concurrent_queue.h"
 
 using std::string;
 using std::exception;
@@ -19,6 +25,19 @@ using cppkafka::TopicPartitionList;
 
 bool running = true;
 
+concurrent_queue<string> g_queue_jpg_msg;
+
+boost::thread thread_jpg_msg_handler;
+
+void task_jpg_handler()
+{
+    while (true) {
+        string msg_jpg;
+        g_queue_jpg_msg.wait_and_pop(msg_jpg);
+        cout << "Processing\t" << msg_jpg << endl;
+    }
+}
+
 //./kafka_consumer -b 172.31.3.1:9092,172.31.3.2:9092,172.31.3.3:9092 -t handledImg-topic -g sjk-beichuang-lpa
 
 int main(int argc, char* argv[]) {
@@ -28,6 +47,8 @@ int main(int argc, char* argv[]) {
 
     // Stop processing on SIGINT
     signal(SIGINT, [](int) { running = false; });
+    
+    thread_jpg_msg_handler = boost::thread(boost::bind(&task_jpg_handler));
     
     brokers = "172.31.3.1:9092,172.31.3.2:9092,172.31.3.3:9092";
     topic_name = "handledImg-topic";
@@ -77,7 +98,9 @@ int main(int argc, char* argv[]) {
                     cout << msg.get_key() << " -> ";
                 }
                 // Print the payload
-                cout << msg.get_payload() << endl;
+                //cout << msg.get_payload() << endl;
+                // Push the msg to queue
+                g_queue_jpg_msg.push(string(msg.get_payload()));
                 // Now commit the message
                 consumer.commit(msg);
             }
