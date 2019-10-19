@@ -55,7 +55,7 @@ bool JpgPuller::get_snapshot(char * url)
     curl_handle = curl_easy_init();
     
     /* specify URL to get */
-    char ipc_url[100] =
+    char ipc_url[1024] =
     { 0 };
     sprintf(ipc_url, "%s", url);
     curl_easy_setopt(curl_handle, CURLOPT_URL, ipc_url);
