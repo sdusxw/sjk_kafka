@@ -19,4 +19,8 @@ add_executable(kafka_consumer
 
 target_link_libraries(kafka_consumer pthread cppkafka boost_program_options)
 
+add_executable(test_jpg_puller
+	test_jpg_puller.cpp
+)
 
+target_link_libraries(test_jpg_puller pthread common)
