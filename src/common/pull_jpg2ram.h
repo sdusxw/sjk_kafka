@@ -17,7 +17,7 @@ class JpgPuller
     }    //构造函数
     bool initialize();                    //分配空间
     bool pull_image(char * url);        //抓拍一张图
-    void free_memory();                 //释放分配的图片空间
+    void free_memory();                 //释放分配的图片
     char * p_jpg_image;                //Jpg图像指针
     size_t jpg_size;                    //jpg图像大小
     private:

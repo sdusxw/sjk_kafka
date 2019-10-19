@@ -50,7 +50,7 @@ void task_jpg_handler()
         //下载图片
         JpgPuller jp;
         jp.initialize();
-        if(jp.pull_image(string_img_url.c_str()))
+        if(jp.pull_image((char*)string_img_url.c_str()))
         {
             printf("OK, jpg size:\t%d", (int)jp.jpg_size);
         }else{
