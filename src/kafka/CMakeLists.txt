@@ -13,6 +13,12 @@ link_directories(
 #	lpr_alg.cpp
 #)
 
+add_executable(sjk_master
+    sjk_master.cpp
+)
+
+target_link_libraries(sjk_master pthread cppkafka common curl)
+
 add_executable(kafka_consumer
 	consumer.cpp
 )
