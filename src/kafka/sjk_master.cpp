@@ -35,6 +35,28 @@ void task_jpg_handler()
         string msg_jpg;
         g_queue_jpg_msg.wait_and_pop(msg_jpg);
         cout << "Processing\t" << msg_jpg << endl;
+        Json::Reader reader;
+        Json::Value json_object;
+        
+        if (!reader.parse(msg_jpg, json_object))
+        {
+            //JSON格式错误导致解析失败
+            cout << "[json]解析失败" << endl;
+            continue;
+        }
+        
+        //处理kafka的Topic2消息
+        string string_img_url = json_object["imgURL"].asString();
+        //下载图片
+        JpgPuller jp;
+        jp.initialize();
+        if(jp.pull_image(string_img_url.c_str()))
+        {
+            printf("OK, jpg size:\t%d", (int)jp.jpg_size);
+        }else{
+            printf("Pull jpg error");
+        }
+        jp.free_memory();
     }
 }
 
@@ -93,10 +115,6 @@ int main(int argc, char* argv[]) {
                 }
             }
             else {
-                // Print the key (if any)
-                if (msg.get_key()) {
-                    cout << msg.get_key() << " -> ";
-                }
                 // Print the payload
                 //cout << msg.get_payload() << endl;
                 // Push the msg to queue

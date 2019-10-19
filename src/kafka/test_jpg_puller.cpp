@@ -6,7 +6,7 @@ int main(int argc, char ** argv)
 {
     JpgPuller jp;
     jp.initialize();
-    if(jp.get_snapshot(argv[1]))
+    if(jp.pull_image(argv[1]))
     {
         printf("OK, jpg size:\t%d", (int)jp.jpg_size);
     }else{

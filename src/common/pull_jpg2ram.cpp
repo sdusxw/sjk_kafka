@@ -39,7 +39,7 @@ bool JpgPuller::initialize()
     else
     return false;
 }
-bool JpgPuller::get_snapshot(char * url)
+bool JpgPuller::pull_image(char * url)
 {
     bool result = false;
     char char_msg[100] = "";
@@ -110,5 +110,14 @@ bool JpgPuller::get_snapshot(char * url)
         sprintf(char_msg, "get_snapshot failed: %s\n", url);
     }
     return result;
+}
+
+void JpgPuller::free_memory()
+{
+    if (p_jpg_image)
+    {
+        free(p_jpg_image);
+        p_jpg_image = nullptr;
+    }
 }
 /***************************end****************************************/
