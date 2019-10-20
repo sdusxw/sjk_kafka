@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
     FILE *fp;
     fp = fopen("1.jpg", "rb");
     
+    printf("fp:\t%x\n", fp);
+    
     int f_len = fseek(fp, SEEK_END, 0);
     
     fseek(fp, 0, SEEK_SET);
@@ -26,7 +28,7 @@ int main(int argc, char *argv[])
     
     fread(p_data, f_len, 1, fp);
     
-    printf("file length:\t%d", f_len);
+    printf("file length:\t%d\n", f_len);
 
   /* Fill in the file upload field */
     curl_formadd(&formpost,
