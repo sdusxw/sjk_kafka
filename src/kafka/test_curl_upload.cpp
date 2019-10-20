@@ -20,9 +20,7 @@ int main(int argc, char *argv[])
     
     printf("fp:\t%x\n", fp);
     
-    int f_len = fseek(fp, SEEK_END, 0);
-    
-    fseek(fp, 0, SEEK_SET);
+    int f_len = 362740;
     
     char * p_data = (char*)malloc(f_len);
     
