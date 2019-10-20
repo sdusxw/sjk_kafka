@@ -15,7 +15,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
     size_t realsize = size * nmemb;
     struct MemoryStruct *mem = (struct MemoryStruct *)userp;
     
-    char *ptr = realloc(mem->memory, mem->size + realsize + 1);
+    char *ptr = (char*)realloc(mem->memory, mem->size + realsize + 1);
     if(!ptr) {
         /* out of memory! */
         printf("not enough memory (realloc returned NULL)\n");
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     
     struct MemoryStruct chunk;
     
-    chunk.memory = malloc(1);  /* will be grown as needed by realloc above */
+    chunk.memory = (char*)malloc(1);  /* will be grown as needed by realloc above */
     chunk.size = 0;    /* no data at this point */
 
   struct curl_httppost *formpost = NULL;
