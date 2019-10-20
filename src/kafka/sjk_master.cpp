@@ -11,6 +11,7 @@
 
 #include "common.h"
 #include "pull_jpg2ram.h"
+#include "push_jpg2lpa.h"
 #include "concurrent_queue.h"
 
 using std::string;
@@ -31,6 +32,8 @@ boost::thread thread_jpg_msg_handler;
 
 void task_jpg_handler()
 {
+    JpgPusher pusher;
+    pusher.initialize();
     while (true) {
         string msg_jpg;
         g_queue_jpg_msg.wait_and_pop(msg_jpg);
@@ -52,7 +55,10 @@ void task_jpg_handler()
         jp.initialize();
         if(jp.pull_image((char*)string_img_url.c_str()))
         {
-            printf("OK, jpg size:\t%d", (int)jp.jpg_size);
+            //上传图片到车辆分析引擎
+            string url = "http://127.0.0.1:81/chpAnalyze";
+            string res = pusher.push_image(url, jp.p_jpg_image, jp.jpg_size);
+            cout << "Lpa Res->\n" << res << endl;
         }else{
             printf("Pull jpg error");
         }
