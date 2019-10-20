@@ -3,10 +3,42 @@
 #include <string.h>
 
 #include <curl/curl.h>
+
+struct MemoryStruct {
+    char *memory;
+    size_t size;
+};
+
+static size_t
+WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    size_t realsize = size * nmemb;
+    struct MemoryStruct *mem = (struct MemoryStruct *)userp;
+    
+    char *ptr = realloc(mem->memory, mem->size + realsize + 1);
+    if(!ptr) {
+        /* out of memory! */
+        printf("not enough memory (realloc returned NULL)\n");
+        return 0;
+    }
+    
+    mem->memory = ptr;
+    memcpy(&(mem->memory[mem->size]), contents, realsize);
+    mem->size += realsize;
+    mem->memory[mem->size] = 0;
+    
+    return realsize;
+}
+
 int main(int argc, char *argv[])
 {
   CURL *curl;
   CURLcode res;
+    
+    struct MemoryStruct chunk;
+    
+    chunk.memory = malloc(1);  /* will be grown as needed by realloc above */
+    chunk.size = 0;    /* no data at this point */
 
   struct curl_httppost *formpost = NULL;
   struct curl_httppost *lastptr = NULL;
@@ -47,6 +79,14 @@ int main(int argc, char *argv[])
   /* initialize custom header list (stating that Expect: 100-continue is not
      wanted */
   headerlist = curl_slist_append(headerlist, buf);
+    
+    /* send all data to this function  */
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+    
+    /* we pass our 'chunk' struct to the callback function */
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
+    
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
   if(curl) {
     /* what URL that receives this POST */
     curl_easy_setopt(curl, CURLOPT_URL, "http://127.0.0.1:81/chpAnalyze");
@@ -61,6 +101,8 @@ int main(int argc, char *argv[])
       fprintf(stderr, "curl_easy_perform() failed: %s\n",
               curl_easy_strerror(res));
 
+      printf("Fuck:\n%s\n",chunk.memory);
+      
     /* always cleanup */
     curl_easy_cleanup(curl);
 
