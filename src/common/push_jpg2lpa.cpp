@@ -106,6 +106,7 @@ string JpgPusher::push_image(string url, char* p_jpg_data, int jpg_length)
         curl_formfree(formpost);
         /* free slist */
         curl_slist_free_all(headerlist);
+    }
     pthread_mutex_unlock(&mutex_lock);
     return result;
 }
