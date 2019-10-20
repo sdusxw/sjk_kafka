@@ -36,3 +36,9 @@ add_executable(test_curl_upload
 )
 
 target_link_libraries(test_curl_upload pthread curl)
+
+add_executable(test_jpg_pusher
+test_jpg_pusher.cpp
+)
+
+target_link_libraries(test_jpg_pusher pthread common curl)

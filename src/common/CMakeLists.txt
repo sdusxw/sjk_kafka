@@ -6,8 +6,10 @@ add_library(common
 	concurrent_queue.cpp
 	jpg_codec.h
 	jpg_codec.cpp
-    pull_jpg2ram.h
-    pull_jpg2ram.cpp
+	pull_jpg2ram.h
+	pull_jpg2ram.cpp
+	push_jpg2lpa.h
+	push_jpg2lpa.cpp
 )
 
 target_link_libraries(common pthread jpeg boost_system boost_thread iconv)
