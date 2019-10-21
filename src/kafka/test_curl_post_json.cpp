@@ -63,6 +63,10 @@ int main(int argc, char *argv[])
      wanted */
   headerlist = curl_slist_append(headerlist, buf);
     
+    headerlist = curl_slist_append(headerlist, "Accept: application/json");
+    headerlist = curl_slist_append(headerlist, "Content-Type: application/json");
+    headerlist = curl_slist_append(headerlist, "charsets: utf-8");
+    
     /* send all data to this function  */
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
     
