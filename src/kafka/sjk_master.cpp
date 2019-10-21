@@ -3,7 +3,7 @@
 #include <csignal>
 #include <time.h>
 #include <boost/thread.hpp>
-
+#include <curl/curl.h>
 #include <json/json.h>  //jsoncpp
 
 #include "cppkafka/consumer.h"
@@ -29,6 +29,11 @@ bool running = true;
 concurrent_queue<string> g_queue_jpg_msg;
 
 boost::thread thread_jpg_msg_handler;
+
+bool push_result(string url, string json_result)
+{
+    
+}
 
 void task_jpg_handler()
 {
