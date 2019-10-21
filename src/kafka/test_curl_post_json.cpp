@@ -36,7 +36,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 
 int main(int argc, char *argv[])
 {
-    string str_json = "{\"passId\":\"sxjgl_lxgs_320300011050204007720_20191021_1571634478275_002878\",\"receivetime\":1571634476887,\"sendtime\":1571634476891,\"path\":\"cloud_lpr/jiangsu/lianxugs/321000_03/sxjgl_lxgs_320300011050204007720/20191021/sxjgl_lxgs_320300011050204007720_20191021_1571634478275_002878.jpg\",\"engineType\":\"sjk-beichuang-lpa\",\"engineId\":\"beichuang_01\",\"plateNo\":\"苏MF8U21\",\"plateColor\":\"3\",\"vehicleColor\":\"yellow\",\"vehicleType\":\"客车\",\"vehicleBrand\":\"奔驰\",\"vehicleModel\":\"S600\",\"vehicleYear\":\"2017\",\"duration\":27,\"rect\":{\"top\":865,\"left\":1048,\"bottom\":905,\"right\":1214}}";
+    string str_json = "[{\"passId\":\"sxjgl_lxgs_320300011050204007720_20191021_1571634478275_002878\",\"receivetime\":1571634476887,\"sendtime\":1571634476891,\"path\":\"cloud_lpr/jiangsu/lianxugs/321000_03/sxjgl_lxgs_320300011050204007720/20191021/sxjgl_lxgs_320300011050204007720_20191021_1571634478275_002878.jpg\",\"engineType\":\"sjk-beichuang-lpa\",\"engineId\":\"beichuang_01\",\"plateNo\":\"苏MF8U21\",\"plateColor\":\"3\",\"vehicleColor\":\"yellow\",\"vehicleType\":\"客车\",\"vehicleBrand\":\"奔驰\",\"vehicleModel\":\"S600\",\"vehicleYear\":\"2017\",\"duration\":27,\"rect\":{\"top\":865,\"left\":1048,\"bottom\":905,\"right\":1214}}]";
   CURL *curl;
   CURLcode res;
     
