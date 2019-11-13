@@ -24,11 +24,19 @@ using cppkafka::Configuration;
 using cppkafka::Message;
 using cppkafka::TopicPartitionList;
 
+typedef struct
+{
+    int msg_len;
+    char message[2048];                     //JSON消息
+}mesg, *p_mesg;
+
 bool running = true;
 
 concurrent_queue<string> g_queue_jpg_msg;
 
 boost::thread thread_jpg_msg_handler;
+
+void * alpr_handle(void *arg);
 
 bool push_result(string url, string json_result)
 {
@@ -43,32 +51,47 @@ void task_jpg_handler()
         string msg_jpg;
         g_queue_jpg_msg.wait_and_pop(msg_jpg);
         cout << "Processing\t" << msg_jpg << endl;
-        Json::Reader reader;
-        Json::Value json_object;
         
-        if (!reader.parse(msg_jpg, json_object))
-        {
-            //JSON格式错误导致解析失败
-            cout << "[json]解析失败" << endl;
-            continue;
-        }
+        p_mesg pms = (p_mesg)malloc(sizeof(mesg));
+        memcpy(pms->message, msg_jpg.c_str(), msg_jpg.length());
+        pms->message[msg_jpg.length()] = '\0';
+        pms->msg_len = msg_jpg.length();
         
-        //处理kafka的Topic2消息
-        string string_img_url = json_object["imgURL"].asString();
-        //下载图片
-        JpgPuller jp;
-        jp.initialize();
-        if(jp.pull_image((char*)string_img_url.c_str()))
-        {
-            //上传图片到车辆分析引擎
-            string url = "http://127.0.0.1:80/chpAnalyze";
-            string res = pusher.push_image(url, jp.p_jpg_image, jp.jpg_size);
-            cout << "Lpa Res->\n" << res << endl;
-        }else{
-            printf("Pull jpg error");
-        }
-        jp.free_memory();
+        pthread_t tid_msg_handle;
+        pthread_create(&tid_msg_handle,NULL,alpr_handle, pms);
+        pthread_detach(tid_msg_handle);
     }
+}
+
+void * alpr_handle(void *arg)
+{
+    p_mesg pms = (p_mesg)arg;
+    std::string msg_jpg = std::string(pms->message, pms->msg_len);
+    Json::Reader reader;
+    Json::Value json_object;
+    
+    if (!reader.parse(msg_jpg, json_object))
+    {
+        //JSON格式错误导致解析失败
+        cout << "[json]解析失败" << endl;
+        continue;
+    }
+    
+    //处理kafka的Topic2消息
+    string string_img_url = json_object["imgURL"].asString();
+    //下载图片
+    JpgPuller jp;
+    jp.initialize();
+    if(jp.pull_image((char*)string_img_url.c_str()))
+    {
+        //上传图片到车辆分析引擎
+        string url = "http://127.0.0.1:80/chpAnalyze";
+        string res = pusher.push_image(url, jp.p_jpg_image, jp.jpg_size);
+        cout << "Lpa Res->\n" << res << endl;
+    }else{
+        printf("Pull jpg error");
+    }
+    jp.free_memory();
 }
 
 //./kafka_consumer -b 172.31.3.1:9092,172.31.3.2:9092,172.31.3.3:9092 -t handledImg-topic -g sjk-beichuang-lpa
