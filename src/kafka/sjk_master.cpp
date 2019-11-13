@@ -116,10 +116,10 @@ void * alpr_handle(void *arg)
         Json::StreamWriterBuilder writerBuilder;
         std::ostringstream os;
         //消息发送时间戳
-        string sendtime = get_unix_ts_ms();
+        long sendtime = get_unix_ts_ms();
         Json::Value json_result;
         json_result["passId"]=passId;
-        json_result["receivetime"]=receivetime;
+        json_result["receivetime"]=(Json::Value::UInt64)receivetime;
         json_result["sendtime"]=sendtime;
         json_result["path"]=path;
         json_result["engineType"]="sjk-beichuang-lpa";
@@ -131,7 +131,7 @@ void * alpr_handle(void *arg)
         json_result["vehicleModel"]="cullinan";
         json_result["vehicleYear"]="2035";
         json_result["vehicleColor"]="2";
-        json_result["duration"]=sendtime-receivetime;
+        json_result["duration"]=(Json::Value::UInt64)(sendtime-receivetime);
         
         //
         json_res.append(json_result);
