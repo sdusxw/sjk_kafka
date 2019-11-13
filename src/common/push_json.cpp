@@ -83,7 +83,7 @@ string JsonPusher::push_json(string url, string json)
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         
         /* ask libcurl to show us the verbose output */
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+        //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
         
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerlist);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json.c_str());
