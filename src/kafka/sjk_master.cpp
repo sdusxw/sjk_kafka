@@ -61,7 +61,7 @@ void task_jpg_handler()
         if(jp.pull_image((char*)string_img_url.c_str()))
         {
             //上传图片到车辆分析引擎
-            string url = "http://127.0.0.1:81/chpAnalyze";
+            string url = "http://127.0.0.1:80/chpAnalyze";
             string res = pusher.push_image(url, jp.p_jpg_image, jp.jpg_size);
             cout << "Lpa Res->\n" << res << endl;
         }else{
