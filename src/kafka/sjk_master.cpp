@@ -45,8 +45,6 @@ bool push_result(string url, string json_result)
 
 void task_jpg_handler()
 {
-    JpgPusher pusher;
-    pusher.initialize();
     while (true) {
         string msg_jpg;
         g_queue_jpg_msg.wait_and_pop(msg_jpg);
@@ -65,6 +63,8 @@ void task_jpg_handler()
 
 void * alpr_handle(void *arg)
 {
+    JpgPusher pusher;
+    pusher.initialize();
     p_mesg pms = (p_mesg)arg;
     std::string msg_jpg = std::string(pms->message, pms->msg_len);
     Json::Reader reader;
@@ -74,7 +74,7 @@ void * alpr_handle(void *arg)
     {
         //JSON格式错误导致解析失败
         cout << "[json]解析失败" << endl;
-        continue;
+        return nullptr;
     }
     
     //处理kafka的Topic2消息
