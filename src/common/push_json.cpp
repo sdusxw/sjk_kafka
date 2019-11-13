@@ -49,7 +49,7 @@ string JsonPusher::push_json(string url, string json)
     CURL *curl;
     CURLcode res;
     
-    struct MemoryStruct chunk;
+    struct MemoryStructX chunk;
     
     chunk.memory = (char*)malloc(1);  /* will be grown as needed by realloc above */
     chunk.size = 0;    /* no data at this point */
