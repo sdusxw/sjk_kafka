@@ -10,6 +10,8 @@ add_library(common
 	pull_jpg2ram.cpp
 	push_jpg2lpa.h
 	push_jpg2lpa.cpp
+	push_json.h
+	push_json.cpp
 )
 
 target_link_libraries(common pthread jpeg boost_system boost_thread iconv)

@@ -12,6 +12,7 @@
 #include "common.h"
 #include "pull_jpg2ram.h"
 #include "push_jpg2lpa.h"
+#include "push_json.h"
 #include "concurrent_queue.h"
 
 using std::string;
@@ -37,11 +38,6 @@ concurrent_queue<string> g_queue_jpg_msg;
 boost::thread thread_jpg_msg_handler;
 
 void * alpr_handle(void *arg);
-
-bool push_result(string url, string json_result)
-{
-    
-}
 
 void task_jpg_handler()
 {
@@ -139,7 +135,11 @@ void * alpr_handle(void *arg)
         jsonWriter->write(json_res, &os);
         string alpr_body = os.str();
         cout << "Send:\n" << alpr_body << endl;
-        
+        JsonPusher json_pusher;
+        json_pusher.initialize();
+        string json_post_url = "http://172.31.49.252/data-collect/report/engine";
+        string json_ret = json_pusher.push_json(json_post_url, alpr_body);
+        cout << "Josn Return:\n" << json_ret << endl;
     }else{
         printf("Pull jpg error");
     }
