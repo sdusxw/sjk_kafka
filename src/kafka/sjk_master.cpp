@@ -120,7 +120,7 @@ void * alpr_handle(void *arg)
         Json::Value json_result;
         json_result["passId"]=passId;
         json_result["receivetime"]=(Json::Value::UInt64)receivetime;
-        json_result["sendtime"]=sendtime;
+        json_result["sendtime"]=(Json::Value::UInt64)sendtime;
         json_result["path"]=path;
         json_result["engineType"]="sjk-beichuang-lpa";
         json_result["engineId"]="beichuang_01";
