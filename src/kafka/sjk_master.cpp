@@ -63,6 +63,8 @@ void task_jpg_handler()
 
 void * alpr_handle(void *arg)
 {
+    //消息接收时间戳
+    long receivetime=get_unix_ts_ms();
     JpgPusher pusher;
     pusher.initialize();
     p_mesg pms = (p_mesg)arg;
@@ -73,12 +75,14 @@ void * alpr_handle(void *arg)
     if (!reader.parse(msg_jpg, json_object))
     {
         //JSON格式错误导致解析失败
-        cout << "[json]解析失败" << endl;
+        cout << "[json]Kafka Topic2解析失败" << endl;
         return nullptr;
     }
     
     //处理kafka的Topic2消息
     string string_img_url = json_object["imgURL"].asString();
+    string passId = json_object["passId"].asString();
+    string path = json_object["path"].asString();
     //下载图片
     JpgPuller jp;
     jp.initialize();
@@ -88,6 +92,54 @@ void * alpr_handle(void *arg)
         string url = "http://127.0.0.1:80/chpAnalyze";
         string res = pusher.push_image(url, jp.p_jpg_image, jp.jpg_size);
         cout << "Lpa Res->\n" << res << endl;
+        Json::Reader res_reader;
+        Json::Value res_json_object;
+        if (!res_reader.parse(res, res_json_object))
+        {
+            //JSON格式错误导致解析失败
+            cout << "[json]识别引擎返回消息解析失败" << endl;
+            jp.free_memory();
+            return nullptr;
+        }
+        //分析引擎返回结果
+        Json::Value arrayObj = res_json_object["results"];
+        int code = arrayObj[0]["code"].asInt();
+        string plateNo = "NO_PLATE";
+        int plateColor = 3;
+        if(code == 0)
+        {
+            Json::Value result = arrayObj[0]["result"];
+            plateNo = result["vehlic"].asString();
+            plateColor = result["lic_color"].asInt();
+        }
+        Json::Value json_res;
+        Json::StreamWriterBuilder writerBuilder;
+        std::ostringstream os;
+        //消息发送时间戳
+        string sendtime = get_unix_ts_ms();
+        Json::Value json_result;
+        json_result["passId"]=passId;
+        json_result["receivetime"]=receivetime;
+        json_result["sendtime"]=sendtime;
+        json_result["path"]=path;
+        json_result["engineType"]="sjk-beichuang-lpa";
+        json_result["engineId"]="beichuang_01";
+        json_result["plateNo"]=plateNo;
+        json_result["plateColor"]=std::to_string(plateColor);
+        json_result["vehicleType"]="SUV";
+        json_result["vehicleBrand"]="rolls-royce";
+        json_result["vehicleModel"]="cullinan";
+        json_result["vehicleYear"]="2035";
+        json_result["vehicleColor"]="2";
+        json_result["duration"]=sendtime-receivetime;
+        
+        //
+        json_res.append(json_result);
+        std::unique_ptr<Json::StreamWriter> jsonWriter(writerBuilder.newStreamWriter());
+        jsonWriter->write(json_res, &os);
+        string alpr_body = os.str();
+        cout << "Send:\n" << alpr_body << endl;
+        
     }else{
         printf("Pull jpg error");
     }
