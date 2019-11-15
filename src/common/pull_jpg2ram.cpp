@@ -53,7 +53,7 @@ bool JpgPuller::pull_image(char * url)
     
     /* init the curl session */
     curl_handle = curl_easy_init();
-    
+    curl_setopt(curl_handle, CURLOPT_NOSIGNAL,1L);
     /* specify URL to get */
     char ipc_url[1024] =
     { 0 };
