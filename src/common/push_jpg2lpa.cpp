@@ -67,7 +67,7 @@ string JpgPusher::push_image(string url, char* p_jpg_data, int jpg_length)
                  CURLFORM_END);
  
     curl = curl_easy_init();
-    curl_setopt(curl, CURLOPT_NOSIGNAL,1L);
+    curl_easy_setopt(curl, CURLOPT_NOSIGNAL,1L);
     /* initialize custom header list (stating that Expect: 100-continue is not
      wanted */
     headerlist = curl_slist_append(headerlist, buf);
