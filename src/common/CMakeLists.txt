@@ -14,5 +14,5 @@ add_library(common
 	push_json.cpp
 )
 
-target_link_libraries(common pthread jpeg boost_system boost_thread iconv)
+target_link_libraries(common pthread jpeg boost_system boost_thread iconv ssl)
 
