@@ -1,5 +1,8 @@
 #include <curl/curl.h>
 
+int thread_setup(void);
+int thread_cleanup(void);
+
 //JpgPuller类的内存结构体
 struct MemoryStruct
 {

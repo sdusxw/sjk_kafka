@@ -106,7 +106,6 @@ bool JpgPuller::pull_image(char * url)
     char char_msg[100] = "";
     std::string log_msg = "";
     pthread_mutex_lock(&mutex_lock);
-    thread_setup();
     CURL *curl_handle;
     CURLcode res;
     chunk.memory = (char*) malloc(1); /* will be grown as needed by the realloc above */
@@ -166,7 +165,6 @@ bool JpgPuller::pull_image(char * url)
     curl_easy_cleanup(curl_handle);
     if (chunk.memory)
     free(chunk.memory);
-    thread_cleanup();
     pthread_mutex_unlock(&mutex_lock);
     if (!result)
     {

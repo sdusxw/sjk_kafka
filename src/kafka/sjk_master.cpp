@@ -155,7 +155,7 @@ int main(int argc, char* argv[]) {
     
     //初始化curl环境
     curl_global_init(CURL_GLOBAL_ALL);
-
+    thread_setup();
     // Stop processing on SIGINT
     signal(SIGINT, [](int) { running = false; });
     
@@ -213,4 +213,5 @@ int main(int argc, char* argv[]) {
             }
         }
     }
+    thread_cleanup();
 }
